@@ -1,6 +1,10 @@
 from __future__ import annotations
-from model.entities import Field
-from src.model.constants import MARKER_EMPTY
+
+from dataclasses import field
+
+from src.model.entities import Field
+
+from src.model.constants import MARKER_EMPTY, MARKER_CROSS, MARKER_ZERO
 
 
 class Referee:
@@ -88,11 +92,29 @@ class Game:
 
 
     def set_up(self) -> None:
-        pass
+       self.__field.create()
 
-    def make_move(self, x, y) -> None:
-        pass
+    def make_move(self, x: int, y: int, marker: int) -> bool:
+
+        if self.__field.try_make_move(x, y, marker):
+
+            self.__field.set_marker(x, y, marker)
+
+            if self.__referee.check_win(marker):
+                return True
+
+            elif self.__referee.check_draw(marker):
+                return True
+
+            return False
+
+
+        else:
+            raise ValueError()
+
 
     def finish(self) -> None:
-        pass
+        self.__field.reset()
 
+    def get_field(self) -> Field:
+        return self.__field

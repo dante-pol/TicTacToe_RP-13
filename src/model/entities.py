@@ -1,9 +1,10 @@
-from constants import *
+from src.model.constants import *
 
 class Cell:
 
     __x: int
     __y: int
+    __marker: int
 
     def __init__(self, x: int, y: int):
         self.__x = x
@@ -24,6 +25,10 @@ class Cell:
             raise ValueError(f"Not found marker: {marker}")
 
         self.__marker = marker
+
+    def get_marker(self) -> int:
+        return self.__marker
+
 
     def reset(self) -> None:
         self.__marker = MARKER_EMPTY
@@ -64,8 +69,6 @@ class Field:
                 cell = Cell(i, j)
                 self.__cells[i].append(cell)
 
-
-
     def reset(self):
         for i in range(0, self.__rows, 1):
             for j in range(0, self.__columns, 1):
@@ -79,3 +82,6 @@ class Field:
 
     def get_cells(self) -> list[list[Cell]]:
         return self.__cells
+
+    def set_marker(self, x: int, y: int, marker: int, ) -> None:
+        self.__cells[x][y].set_marker(marker)
