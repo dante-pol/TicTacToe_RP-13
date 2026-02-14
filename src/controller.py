@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-from dataclasses import field
-
+from src.display import *
 from src.model.entities import Field
-
 from src.model.constants import MARKER_EMPTY, MARKER_CROSS, MARKER_ZERO
+
 
 
 class Referee:
@@ -15,57 +14,52 @@ class Referee:
         self.__field = field
 
     def __check_win_by_row(self, marker: int) -> bool:
-        is_win = False
 
         for row in range(self.__field.get_rows()):
+
+            count_win = 0
+
             for column in range(self.__field.get_columns()):
 
-                if self.__field.get_cells()[row][column] == marker:
-                    is_win = True
+                if self.__field.cells[row][column].marker == marker:
+                    count_win += 1
 
-                else:
-                    is_win = False
-
-            if is_win:
+            if count_win == 3:
                 return True
 
         return False
 
 
     def __check_win_by_column(self, marker: int) -> bool:
-        is_win = False
 
         for column in range(self.__field.get_columns()):
+
+            count_win = 0
+
             for row in range(self.__field.get_rows()):
 
-                if self.__field.get_cells()[row][column] == marker:
-                    is_win = True
+                if self.__field.cells[row][column].marker == marker:
+                    count_win += 1
 
-                else:
-                    is_win = False
-
-            if is_win:
+            if count_win == 3:
                 return True
 
         return False
 
     def __check_win_by_diagonal(self, marker: int) -> bool:
-        is_win = False
+        count_win_main = 0
+        count_win_secondary = 0
 
-        for row in range(self.__field.get_rows()):
-            for column in range(self.__field.get_columns()):
+        for i in range(self.__field.get_rows()):
 
-                if self.__field.get_cells()[row][row] == marker:
-                    is_win = True
+            if self.__field.cells[i][i].marker == marker:
+                count_win_main += 1
 
-                elif self.__field.get_cells()[row][self.__field.get_rows() - 1 - row] == marker:
-                    is_win = True
+            if self.__field.cells[i][self.__field.get_rows() - 1 - i].marker == marker:
+                count_win_secondary += 1
 
-                else:
-                    is_win = False
-
-            if is_win:
-                return True
+        if count_win_main == 3 or count_win_secondary == 3:
+            return True
 
         return False
 
@@ -75,17 +69,26 @@ class Referee:
 
         return False
 
-    def check_draw(self, marker: int) -> bool:
-        if not self.__check_win_by_row(marker) and not self.__check_win_by_column(marker) and not self.__check_win_by_diagonal(marker):
-            return True
+    def check_draw(self) -> bool:
 
-        return False
+        for i in range(self.__field.get_rows()):
+            for j in range(self.__field.get_columns()):
+
+                if self.__field.cells[i][j].is_empty():
+                    return False
+
+        return True
 
 
 class Game:
 
+    VICTORY = 1
+    DRAW = 0
+    EMPTY = -1
+
     def __init__(self):
         self.__current_player = MARKER_EMPTY
+        self.__status_gameplay = Game.EMPTY
 
         self.__field = Field(3, 3)
         self.__referee = Referee(self.__field)
@@ -93,28 +96,61 @@ class Game:
 
     def set_up(self) -> None:
        self.__field.create()
+       self.__current_player = MARKER_CROSS
 
-    def make_move(self, x: int, y: int, marker: int) -> bool:
+    def try_end_game(self, x: int, y: int) -> bool | None:
 
-        if self.__field.try_make_move(x, y, marker):
+        if self.__field.try_make_move(x, y, self.__current_player):
 
-            self.__field.set_marker(x, y, marker)
+            if self.__referee.check_win(self.__current_player):
+               self.__status_gameplay = Game.VICTORY
+               return True
 
-            if self.__referee.check_win(marker):
+            elif self.__referee.check_draw():
+                self.__status_gameplay = Game.DRAW
                 return True
-
-            elif self.__referee.check_draw(marker):
-                return True
-
-            return False
-
-
         else:
-            raise ValueError()
+            return None
+
+        return False
 
 
     def finish(self) -> None:
+
+        if self.status_gameplay == Game.VICTORY:
+
+            show_field(self.field.cells)
+            show_info(f"{self.current_player} выиграли")
+
+        else:
+
+            show_field(self.field.cells)
+            show_info("Ничья")
+
+
         self.__field.reset()
 
-    def get_field(self) -> Field:
+
+    def swap(self) -> None:
+        if self.__current_player == MARKER_CROSS:
+            self.__current_player = MARKER_ZERO
+
+        elif self.__current_player == MARKER_ZERO:
+            self.__current_player = MARKER_CROSS
+
+        else:
+            self.__current_player = MARKER_CROSS
+
+
+    def __get_field(self) -> Field:
         return self.__field
+
+    def __get_status_gameplay(self) -> int:
+        return self.__status_gameplay
+
+    def __get_current_player(self) -> int:
+        return self.__current_player
+
+    field = property(__get_field)
+    status_gameplay = property(__get_status_gameplay)
+    current_player = property(__get_current_player)

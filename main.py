@@ -5,37 +5,42 @@ from src.model.constants import *
 def main():
     game = Game()
 
-    game.set_up()
-    print(show_field(game.get_field().get_cells()))
-
     print("Введите start чтобы начать игру >>")
     command = input()
 
     if command == COMMAND_START:
 
+        game.set_up()
         is_game = True
-        marker = MARKER_CROSS
 
         while is_game:
-
-            print("Выберите номер column >>")
-            x = int(input())
+            print(show_field(game.field.cells))
 
             print("Выберите номер row >>")
+            x = int(input())
+
+            print("Выберите номер column >>")
             y = int(input())
 
-            if game.make_move(x, y, marker):
-                show_info(f"{marker} выйграли")
-                game.finish()
-                is_game = False
+            result = game.try_end_game(x, y)
+
+            if result:
+
+                if game.status_gameplay == Game.VICTORY:
+
+                    game.finish()
+                    is_game = False
+
+                elif game.status_gameplay == Game.DRAW:
+
+                    game.finish()
+                    is_game = False
+
+            elif result is None:
+                print("Клетка заполнена!!!")
 
             else:
-                marker = MARKER_ZERO
-                is_game = True
-
-            print(show_field(game.get_field().get_cells()))
-
-
+                game.swap()
 
 
 if __name__ == '__main__':

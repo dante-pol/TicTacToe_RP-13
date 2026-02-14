@@ -26,12 +26,14 @@ class Cell:
 
         self.__marker = marker
 
-    def get_marker(self) -> int:
+    def __get_marker(self) -> int:
         return self.__marker
 
 
     def reset(self) -> None:
         self.__marker = MARKER_EMPTY
+
+    marker = property(__get_marker)
 
 
 class Field:
@@ -80,8 +82,7 @@ class Field:
     def get_columns(self) -> int:
         return self.__columns
 
-    def get_cells(self) -> list[list[Cell]]:
+    def __get_cells(self) -> list[list[Cell]]:
         return self.__cells
 
-    def set_marker(self, x: int, y: int, marker: int, ) -> None:
-        self.__cells[x][y].set_marker(marker)
+    cells = property(__get_cells)
