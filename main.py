@@ -17,30 +17,39 @@ def main():
             print(show_field(game.field.cells))
 
             print("Выберите номер row >>")
-            x = int(input())
+            x = input()
+
 
             print("Выберите номер column >>")
-            y = int(input())
+            y = input()
 
-            result = game.try_end_game(x, y)
+            if game.validate_coord(x) and game.validate_coord(y):
 
-            if result:
+                result = game.try_end_game(int(x), int(y))
 
-                if game.status_gameplay == Game.VICTORY:
+                if result:
 
-                    game.finish()
-                    is_game = False
+                    if game.status_gameplay == Game.VICTORY:
 
-                elif game.status_gameplay == Game.DRAW:
+                        game.finish()
+                        is_game = False
 
-                    game.finish()
-                    is_game = False
+                    elif game.status_gameplay == Game.DRAW:
 
-            elif result is None:
-                print("Клетка заполнена!!!")
+                        game.finish()
+                        is_game = False
+
+                elif result is None:
+                    print("Клетка заполнена!!!")
+
+                else:
+                    game.swap()
 
             else:
-                game.swap()
+                print("Не корректный ввод!!!")
+
+    else:
+        print("Не корректный ввод!!!")
 
 
 if __name__ == '__main__':

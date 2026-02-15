@@ -15,11 +15,11 @@ class Referee:
 
     def __check_win_by_row(self, marker: int) -> bool:
 
-        for row in range(self.__field.get_rows()):
+        for row in range(self.__field.rows):
 
             count_win = 0
 
-            for column in range(self.__field.get_columns()):
+            for column in range(self.__field.columns):
 
                 if self.__field.cells[row][column].marker == marker:
                     count_win += 1
@@ -32,11 +32,11 @@ class Referee:
 
     def __check_win_by_column(self, marker: int) -> bool:
 
-        for column in range(self.__field.get_columns()):
+        for column in range(self.__field.columns):
 
             count_win = 0
 
-            for row in range(self.__field.get_rows()):
+            for row in range(self.__field.rows):
 
                 if self.__field.cells[row][column].marker == marker:
                     count_win += 1
@@ -50,12 +50,12 @@ class Referee:
         count_win_main = 0
         count_win_secondary = 0
 
-        for i in range(self.__field.get_rows()):
+        for i in range(self.__field.rows):
 
             if self.__field.cells[i][i].marker == marker:
                 count_win_main += 1
 
-            if self.__field.cells[i][self.__field.get_rows() - 1 - i].marker == marker:
+            if self.__field.cells[i][self.__field.rows - 1 - i].marker == marker:
                 count_win_secondary += 1
 
         if count_win_main == 3 or count_win_secondary == 3:
@@ -71,8 +71,8 @@ class Referee:
 
     def check_draw(self) -> bool:
 
-        for i in range(self.__field.get_rows()):
-            for j in range(self.__field.get_columns()):
+        for i in range(self.__field.rows):
+            for j in range(self.__field.columns):
 
                 if self.__field.cells[i][j].is_empty():
                     return False
@@ -140,6 +140,19 @@ class Game:
 
         else:
             self.__current_player = MARKER_CROSS
+
+
+    def validate_coord(self, coord) -> bool:
+        if not coord.isdigit():
+            return False
+
+        if int(coord) > self.__field.rows or int(coord) > self.__field.columns:
+            return False
+
+        if int(coord) < 0:
+            return False
+
+        return True
 
 
     def __get_field(self) -> Field:
