@@ -42,7 +42,7 @@ class Cell:
 
 
     @staticmethod
-    def get_copy(original: Cell) -> Cell:
+    def copy(original: Cell) -> Cell:
         return Cell(original.__x, original.__y, original.__marker)
 
 
@@ -110,7 +110,7 @@ class Field:
             for y in range(self.__columns):
 
                 cell = self.__cells[x][y]
-                cells[x].append(cell.get_copy(cell))
+                cells[x].append(cell.copy(cell))
 
         return cells
 

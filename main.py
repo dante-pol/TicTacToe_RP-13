@@ -14,36 +14,32 @@ def main():
         is_game = True
 
         while is_game:
-            print(show_field(game.field.cells))
+            print(game.show_field())
 
             print("Выберите номер row >>")
             x = input()
-
 
             print("Выберите номер column >>")
             y = input()
 
             if game.validate_coord(x) and game.validate_coord(y):
 
-                result = game.try_end_game(int(x), int(y))
-
-                if result:
+                if game.try_make_move(int(x), int(y)):
 
                     if game.status_gameplay == Game.VICTORY:
-
                         game.finish()
                         is_game = False
 
                     elif game.status_gameplay == Game.DRAW:
-
                         game.finish()
                         is_game = False
 
-                elif result is None:
-                    print("Клетка заполнена!!!")
+                    else:
+                        game.swap()
 
                 else:
-                    game.swap()
+                    print("Клетка заполнена!!!")
+
 
             else:
                 print("Не корректный ввод!!!")

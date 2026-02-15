@@ -98,8 +98,8 @@ class Game:
        self.__field.create()
        self.__current_player = MARKER_CROSS
 
-    def try_end_game(self, x: int, y: int) -> bool | None:
 
+    def try_make_move(self, x: int, y: int) -> bool | None:
         if self.__field.try_make_move(x, y, self.__current_player):
 
             if self.__referee.check_win(self.__current_player):
@@ -109,24 +109,20 @@ class Game:
             elif self.__referee.check_draw():
                 self.__status_gameplay = Game.DRAW
                 return True
-        else:
-            return None
+
+            return True
 
         return False
 
 
     def finish(self) -> None:
-
-        if self.status_gameplay == Game.VICTORY:
-
-            show_field(self.field.cells)
-            show_info(f"{self.current_player} выиграли")
+        if self.__status_gameplay == Game.VICTORY:
+            self.show_field()
+            show_info(f"{self.current_player} выиграли!!!")
 
         else:
-
-            show_field(self.field.cells)
-            show_info("Ничья")
-
+            self.show_field()
+            show_info(f"Ничья!!!")
 
         self.__field.reset()
 
@@ -134,9 +130,6 @@ class Game:
     def swap(self) -> None:
         if self.__current_player == MARKER_CROSS:
             self.__current_player = MARKER_ZERO
-
-        elif self.__current_player == MARKER_ZERO:
-            self.__current_player = MARKER_CROSS
 
         else:
             self.__current_player = MARKER_CROSS
@@ -155,15 +148,17 @@ class Game:
         return True
 
 
-    def __get_field(self) -> Field:
-        return self.__field
+    def show_field(self) -> str:
+        return show_field(self.__field.cells)
+
 
     def __get_status_gameplay(self) -> int:
         return self.__status_gameplay
 
+
     def __get_current_player(self) -> int:
         return self.__current_player
 
-    field = property(__get_field)
+
     status_gameplay = property(__get_status_gameplay)
     current_player = property(__get_current_player)
