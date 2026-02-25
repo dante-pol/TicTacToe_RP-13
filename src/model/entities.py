@@ -14,11 +14,11 @@ class Cell:
         self.__marker = marker
 
 
-    def get_x(self):
+    def get_x(self) -> int:
         return self.__x
 
 
-    def get_y(self):
+    def get_y(self) -> int:
         return self.__y
 
 
@@ -63,17 +63,13 @@ class Field:
         self.__cells = []
 
 
-    def try_make_move(self, x: int, y: int, marker) -> bool:
+    def let_move(self, x: int, y: int) -> bool:
         if x < 0 or x >= self.__rows: raise ValueError()
         if y < 0 or y >= self.__columns: raise ValueError()
-
-        if marker != MARKER_CROSS and marker != MARKER_ZERO: raise ValueError()
 
         cell = self.__cells[x][y]
 
         if not cell.is_empty(): return False
-
-        cell.set_marker(marker)
 
         return True
 
@@ -100,7 +96,19 @@ class Field:
         return self.__columns
 
 
-    def __get_cells(self) -> list[list[Cell]]:
+    def is_empty(self) -> bool:
+
+        for x in range(self.__rows):
+            for y in range(self.__columns):
+
+                if not self.cells[x][y].is_empty():
+                    return False
+
+        return True
+
+
+    @property
+    def get_cells(self) -> list[list[Cell]]:
         cells = []
 
         for x in range(self.__rows):
@@ -115,6 +123,5 @@ class Field:
         return cells
 
 
-    cells = property(__get_cells)
     rows = property(__get_rows)
     columns = property(__get_columns)

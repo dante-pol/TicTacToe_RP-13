@@ -70,14 +70,10 @@ class Referee:
         return False
 
     def check_draw(self) -> bool:
+        if self.__field.is_empty():
+            return True
 
-        for i in range(self.__field.rows):
-            for j in range(self.__field.columns):
-
-                if self.__field.cells[i][j].is_empty():
-                    return False
-
-        return True
+        return False
 
 
 class Game:
@@ -99,16 +95,16 @@ class Game:
        self.__current_player = MARKER_CROSS
 
 
-    def try_make_move(self, x: int, y: int) -> bool | None:
-        if self.__field.try_make_move(x, y, self.__current_player):
+    def try_make_move(self, x: int, y: int, marker: int) -> bool:
+        if self.__field.let_move(x, y):
+
+            self.__field.cells[x][y].set_marker(marker)
 
             if self.__referee.check_win(self.__current_player):
                self.__status_gameplay = Game.VICTORY
-               return True
 
             elif self.__referee.check_draw():
                 self.__status_gameplay = Game.DRAW
-                return True
 
             return True
 
@@ -148,8 +144,8 @@ class Game:
         return True
 
 
-    def show_field(self) -> str:
-        return show_field(self.__field.cells)
+    def show_field(self) -> None:
+        return show_field(self.__field.get_cells)
 
 
     def __get_status_gameplay(self) -> int:

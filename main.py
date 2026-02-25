@@ -1,5 +1,4 @@
 from src.controller import *
-from src.display import *
 from src.model.constants import *
 
 def main():
@@ -14,7 +13,7 @@ def main():
         is_game = True
 
         while is_game:
-            print(game.show_field())
+            game.show_field()
 
             print("Выберите номер row >>")
             x = input()
