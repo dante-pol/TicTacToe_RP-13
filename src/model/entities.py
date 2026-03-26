@@ -2,6 +2,19 @@ from constants import *
 
 class Cell:
 
+    class RecordCell:
+
+        __x: int
+        __y: int
+        marker: str
+
+        def __init__(self, x: int, y: int, marker: str):
+
+            self.__x = x
+            self.__y = y
+            self.__marker = marker
+
+
     __x: int
     __y: int
 
@@ -29,6 +42,10 @@ class Cell:
         self.__marker = MARKER_EMPTY
 
 
+    def get_record(self) -> RecordCell:
+        return Cell.RecordCell(self.__x, self.__y, self.__marker)
+
+
 class Field:
 
     __rows: int
@@ -40,6 +57,13 @@ class Field:
         self.__columns = columns
 
         self.__cells = []
+
+
+    def get_rows(self):
+        return self.__rows
+
+    def get_columns(self):
+        return self.__columns
 
 
     def try_make_move(self, x: int, y: int, marker) -> bool:
@@ -70,3 +94,20 @@ class Field:
         for i in range(0, self.__rows, 1):
             for j in range(0, self.__columns, 1):
                 self.__cells[i][j].reset()
+
+
+    def get_cell(self) -> list[list[Cell.RecordCell]]:
+
+        new_cell = []
+
+        for x in range(self.__rows):
+            new_cell.append([])
+            for y in range(self.__columns):
+                cell = self.__cells[x][y]
+
+                new_cell[x].append(Cell.get_record(cell))
+
+        return new_cell
+
+
+
